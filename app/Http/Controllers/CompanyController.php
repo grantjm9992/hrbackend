@@ -16,6 +16,7 @@ class CompanyController extends Controller
     public function index(Request $request): JsonResponse
     {
         $companies = Company::all();
+
         return response()->json([
             'status' => 'success',
             'data' => $companies
@@ -42,6 +43,7 @@ class CompanyController extends Controller
     public function show(string $id)
     {
         $company = Company::find($id);
+
         return response()->json([
             'status' => 'success',
             'data' => $company

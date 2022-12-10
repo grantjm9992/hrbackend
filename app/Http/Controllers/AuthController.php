@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Exception\ValidationException;
 use App\Models\Company;
+use App\Models\User;
 use Cassandra\Exception\AlreadyExistsException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -35,6 +35,7 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
+
         return response()->json([
             'status' => 'success',
             'user' => $user,
@@ -78,6 +79,7 @@ class AuthController extends Controller
         $company->save();
 
         $token = Auth::login($user);
+
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',
@@ -92,6 +94,7 @@ class AuthController extends Controller
     public function logout(): JsonResponse
     {
         Auth::logout();
+
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully logged out',
