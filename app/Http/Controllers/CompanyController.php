@@ -66,6 +66,5 @@ class CompanyController extends Controller
 
     public function destroy(string $id)
     {
-
     }
 }

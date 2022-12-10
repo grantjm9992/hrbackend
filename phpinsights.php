@@ -61,7 +61,7 @@ return [
         SlevomatCodingStandard\Sniffs\Classes\ForbiddenPublicPropertySniff::class,
         SlevomatCodingStandard\Sniffs\Commenting\DocCommentSpacingSniff::class,
         SlevomatCodingStandard\Sniffs\Commenting\InlineDocCommentDeclarationSniff::class,
-        SlevomatCodingStandard\Sniffs\Commenting\UselessInheritDocCommentSniff ::class,
+        SlevomatCodingStandard\Sniffs\Commenting\UselessInheritDocCommentSniff::class,
         SlevomatCodingStandard\Sniffs\Commenting\UselessFunctionDocCommentSniff::class,
         SlevomatCodingStandard\Sniffs\TypeHints\DeclareStrictTypesSniff::class,
         SlevomatCodingStandard\Sniffs\TypeHints\DisallowMixedTypeHintSniff::class,
