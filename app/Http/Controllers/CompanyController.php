@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
@@ -19,7 +19,7 @@ class CompanyController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $companies
+            'data' => $companies,
         ]);
     }
 
@@ -30,13 +30,13 @@ class CompanyController extends Controller
         ]);
 
         $company = Company::create([
-            'name' => $request->name
+            'name' => $request->name,
         ]);
 
         return response()->json([
             'status' => 'success',
             'message' => 'Company created successfully',
-            'data' => $company
+            'data' => $company,
         ]);
     }
 
@@ -46,7 +46,7 @@ class CompanyController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $company
+            'data' => $company,
         ]);
     }
 
@@ -62,7 +62,7 @@ class CompanyController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $company
+            'data' => $company,
         ]);
     }
 

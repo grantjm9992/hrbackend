@@ -6,8 +6,6 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -51,7 +49,7 @@ class Handler extends ExceptionHandler
         if ($e instanceof ValidationException) {
             return response()->json([
                 'status' => 'error',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         }
 

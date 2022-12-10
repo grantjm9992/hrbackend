@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
@@ -6,6 +6,24 @@ use Closure;
 
 class CheckIfAdmin
 {
+    /**
+     * Handle an incoming request.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return mixed
+     */
+    public function handle($request, Closure $next)
+    {
+        if (backpack_auth()->guest()) {
+            return $this->respondToUnauthorizedRequest($request);
+        }
+
+        if (!$this->checkIfUserIsAdmin(backpack_user())) {
+            return $this->respondToUnauthorizedRequest($request);
+        }
+
+        return $next($request);
+    }
     /**
      * Checked that the logged in user is an administrator.
      *
@@ -41,27 +59,8 @@ class CheckIfAdmin
     {
         if ($request->ajax() || $request->wantsJson()) {
             return response(trans('backpack::base.unauthorized'), 401);
-        } else {
-            return redirect()->guest(backpack_url('login'));
-        }
-    }
-
-    /**
-     * Handle an incoming request.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return mixed
-     */
-    public function handle($request, Closure $next)
-    {
-        if (backpack_auth()->guest()) {
-            return $this->respondToUnauthorizedRequest($request);
         }
 
-        if (! $this->checkIfUserIsAdmin(backpack_user())) {
-            return $this->respondToUnauthorizedRequest($request);
-        }
-
-        return $next($request);
+        return redirect()->guest(backpack_url('login'));
     }
 }

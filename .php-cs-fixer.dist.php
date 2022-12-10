@@ -20,6 +20,7 @@ return (new PhpCsFixer\Config())
         'single_blank_line_before_namespace' => true,
         'blank_line_after_namespace' => true,
         'phpdoc_align' => ['align' => 'left'],
+        'trailing_comma_in_multiline' => true,
 
         // skip list (see ecs.php)
         'no_multiline_whitespace_around_double_arrow' => false,

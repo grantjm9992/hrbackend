@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Models;
 
@@ -16,6 +16,6 @@ class Clients extends Model
         'name',
         'description',
         'company_id',
-        'active'
+        'active',
     ];
 }
