@@ -46,6 +46,26 @@ class ClientsController extends Controller
         ]);
     }
 
+    public function update(Request $request, string $id): JsonResponse
+    {
+        $this->validate($request, [
+            'name' => 'required|string',
+            'description' => 'string',
+            'active' => 'required|boolean',
+        ]);
+
+        $client = Clients::find($id);
+        $client->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'active' => $request->active,
+        ]);
+
+        return new JsonResponse([
+            'message' => 'success'
+        ]);
+    }
+
     public function listAll(Request $request): JsonResponse
     {
         $clients = Clients::query()

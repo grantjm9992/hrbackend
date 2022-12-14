@@ -33,16 +33,23 @@ Route::middleware('jwt.verify')->group(function() {
     Route::controller(CompanyController::class)->prefix('companies/')->group(function() {
         Route::get('', 'index');
         Route::get('{id}', 'show');
+        Route::delete('{id}', 'delete');
+        Route::post('{id}', 'update');
     });
 
     Route::controller( ClientsController::class)->prefix('clients/')->group(function () {
         Route::post('create', 'create');
         Route::get('', 'listAll');
+        Route::get('{id}', 'find');
+        Route::delete('{id}', 'delete');
+        Route::post('{id}', 'update');
     });
 
     Route::controller(ProjectsController::class)->prefix('projects/')->group(function() {
         Route::get('', 'listAll');
         Route::post('create', 'create');
         Route::get('{id}', 'find');
+        Route::delete('{id}', 'delete');
+        Route::post('{id}', 'update');
     });
 });
