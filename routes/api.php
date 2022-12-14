@@ -31,6 +31,7 @@ Route::middleware('jwt.verify')->group(function() {
     });
 
     Route::controller(CompanyController::class)->prefix('companies/')->group(function() {
+        Route::get('', 'index');
         Route::get('{id}', 'show');
     });
 

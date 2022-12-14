@@ -29,4 +29,10 @@ class Company extends Model
     {
         return $this->hasMany(Clients::class);
     }
+
+
+    public function employees(): HasMany
+    {
+        return $this->hasMany(User::class);
+    }
 }

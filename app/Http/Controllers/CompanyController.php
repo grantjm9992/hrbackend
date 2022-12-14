@@ -43,7 +43,8 @@ class CompanyController extends Controller
     public function show(string $id)
     {
         $company = Company::find($id)
-            ->with('clients')
+            ->with('clients.projects')
+            ->with('employees')
             ->first();
 
         return response()->json([
