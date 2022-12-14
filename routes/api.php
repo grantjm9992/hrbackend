@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClientsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,4 +25,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
+});
+
+Route::controller( ClientsController::class)->prefix('clients/')->group(function () {
+    Route::post('create', 'create');
 });
