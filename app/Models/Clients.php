@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Clients extends Model
 {
@@ -18,4 +19,9 @@ class Clients extends Model
         'company_id',
         'active',
     ];
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Projects::class, 'client_id');
+    }
 }

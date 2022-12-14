@@ -11,7 +11,7 @@ class ClientsController extends Controller
 {
     public function create(Request $request): JsonResponse
     {
-        $user = Auth::user();
+        $user = Auth::user()->toArray();
         $this->validate($request, [
             'name' => 'required|string',
             'description' => 'string',
@@ -20,7 +20,7 @@ class ClientsController extends Controller
         Clients::create([
             'name' => $request->name,
             'description' => $request->description,
-            'companyId' => $user['companyId'],
+            'company_id' => $user['company_id'],
             'active' => true,
         ]);
 
@@ -48,8 +48,9 @@ class ClientsController extends Controller
 
     public function listAll(Request $request): JsonResponse
     {
-        $clients = Clients::where()
-            ->orderBy('name', 'ASC')
+        $clients = Clients::query()
+            ->with('projects')
+            ->orderBy('name')
             ->get()
             ->toArray();
 

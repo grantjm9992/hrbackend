@@ -6,6 +6,7 @@ use App\Traits\Uuids;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Company extends Model
 {
@@ -23,4 +24,9 @@ class Company extends Model
         'number_of_employees',
         'sector_id',
     ];
+
+    public function clients(): HasMany
+    {
+        return $this->hasMany(Clients::class);
+    }
 }

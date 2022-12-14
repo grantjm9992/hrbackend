@@ -42,7 +42,9 @@ class CompanyController extends Controller
 
     public function show(string $id)
     {
-        $company = Company::find($id);
+        $company = Company::find($id)
+            ->with('clients')
+            ->first();
 
         return response()->json([
             'status' => 'success',
@@ -68,5 +70,6 @@ class CompanyController extends Controller
 
     public function destroy(string $id)
     {
+        Company::destroy($id);
     }
 }
