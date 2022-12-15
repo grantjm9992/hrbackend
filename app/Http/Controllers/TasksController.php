@@ -34,7 +34,7 @@ class TasksController extends Controller
 
         $user = Auth::user()->toArray();
 
-        Tasks::create([
+        $task = Tasks::create([
             'project_id' => $request->project_id,
             'name' => $request->name,
             'description' => $request->description,
@@ -43,7 +43,10 @@ class TasksController extends Controller
         ]);
 
         return new JsonResponse([
-            'message' => 'success'
+            'message' => 'success',
+            'data' => [
+                'id' => $task->id
+            ]
         ]);
     }
 

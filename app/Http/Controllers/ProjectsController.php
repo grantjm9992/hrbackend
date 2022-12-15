@@ -15,18 +15,21 @@ class ProjectsController extends Controller
 
         $this->validate($request, [
             'name' => 'required|string',
-            'clientId' => 'required|string',
+            'client_id' => 'required|string',
         ]);
 
-        Projects::create([
+        $project = Projects::create([
             'name' => $request->name,
-            'client_id' => $request->clientId,
+            'client_id' => $request->client_id,
             'company_id' => $user['company_id'],
             'active' => true,
         ]);
 
         return new JsonResponse([
-            'message' => 'success'
+            'message' => 'success',
+            'data' => [
+                'id' => $project->id
+            ]
         ]);
     }
 

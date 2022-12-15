@@ -17,14 +17,19 @@ class ClientsController extends Controller
             'description' => 'string',
         ]);
 
-        Clients::create([
+        $client = Clients::create([
             'name' => $request->name,
             'description' => $request->description,
             'company_id' => $user['company_id'],
             'active' => true,
         ]);
 
-        return new JsonResponse(['message' => 'success']);
+        return new JsonResponse([
+            'message' => 'success',
+            'data' => [
+                'id' => $client->id
+            ],
+        ]);
     }
 
     public function find(string $id): JsonResponse
@@ -62,7 +67,7 @@ class ClientsController extends Controller
         ]);
 
         return new JsonResponse([
-            'message' => 'success'
+            'message' => 'success',
         ]);
     }
 

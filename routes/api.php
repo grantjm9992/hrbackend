@@ -40,7 +40,7 @@ Route::middleware('jwt.verify')->group(function() {
     });
 
     Route::controller( ClientsController::class)->prefix('clients/')->group(function () {
-        Route::post('create', 'create');
+        Route::post('', 'create');
         Route::get('', 'listAll');
         Route::get('{id}', 'find');
         Route::delete('{id}', 'delete');
@@ -49,7 +49,7 @@ Route::middleware('jwt.verify')->group(function() {
 
     Route::controller(ProjectsController::class)->prefix('projects/')->group(function() {
         Route::get('', 'listAll');
-        Route::post('create', 'create');
+        Route::post('', 'create');
         Route::get('{id}', 'find');
         Route::delete('{id}', 'delete');
         Route::post('{id}', 'update');

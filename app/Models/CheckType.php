@@ -11,4 +11,10 @@ class CheckType extends Model
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory;
     use Uuids;
+
+    protected $fillable = [
+        'company_id',
+        'name',
+        'colour',
+    ];
 }

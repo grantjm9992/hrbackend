@@ -42,13 +42,13 @@ class CheckController extends Controller
         $this->validate($request, [
             'user_id' => 'required|string',
             'status' => 'required|string',
-            'check_type_id' => 'string',
+            'check_type_id' => 'required|string',
             'summary' => 'string',
             'task_id' => 'string',
             'project_id' => 'string',
             'client_id' => 'string',
-            'date_started' => 'string',
-            'date_ended' => 'string',
+            'date_started' => 'required|string',
+            'date_ended' => 'required|string',
         ]);
 
         $request->company_id = $user['company_id'];
@@ -63,6 +63,23 @@ class CheckController extends Controller
     public function checkIn(Request $request): JsonResponse
     {
         $user = Auth::user()->toArray();
+
+        $check = Check::query()
+            ->where('user_id', $user['id'])
+            ->where('status', CheckStatus::open())
+            ->first();
+
+        if (!is_null($check)) {
+            return new JsonResponse([
+                'message' => 'error',
+                'errors' => [
+                    [
+                        'message' => 'User already checked in'
+                    ]
+                ]
+            ], 400);
+        }
+
         $this->validate($request, [
             'check_type_id' => 'string',
             'task_id' => 'string',
@@ -107,9 +124,13 @@ class CheckController extends Controller
                         'message' => 'No open check found for user',
                     ],
                 ],
-            ]);
+            ], 401);
         }
 
         $check->close($request->date_ended);
+
+        return new JsonResponse([
+            'message' => 'success'
+        ]);
     }
 }
