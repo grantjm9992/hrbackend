@@ -47,8 +47,8 @@ class CheckController extends Controller
             'task_id' => 'string',
             'project_id' => 'string',
             'client_id' => 'string',
-            'date_started' => 'integer',
-            'date_ended' => 'integer',
+            'date_started' => 'string',
+            'date_ended' => 'string',
         ]);
 
         $request->company_id = $user['company_id'];
@@ -68,11 +68,12 @@ class CheckController extends Controller
             'task_id' => 'string',
             'project_id' => 'string',
             'client_id' => 'string',
-            'date_started' => 'integer',
+            'date_started' => 'required|string',
         ]);
 
         Check::create([
             'user_id' => $user['id'],
+            'company_id' => $user['company_id'],
             'status' => CheckStatus::open(),
             'check_type_id' => $request->check_type_id,
             'task_id' => $request->task_id,
@@ -89,7 +90,7 @@ class CheckController extends Controller
     public function checkOut(Request $request): JsonResponse
     {
         $this->validate($request, [
-            'date_ended' => 'required|int',
+            'date_ended' => 'required|string',
         ]);
 
         $user = Auth::user()->toArray();

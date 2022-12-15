@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CheckController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\TasksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,14 +24,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('jwt.verify')->group(function() {
-    Route::controller(AuthController::class)->group(function () {
-        Route::post('login', 'login');
-        Route::post('register', 'register');
-        Route::post('logout', 'logout');
-        Route::post('refresh', 'refresh');
-    });
+Route::controller(AuthController::class)->group(function () {
+    Route::post('login', 'login');
+    Route::post('register', 'register');
+    Route::post('logout', 'logout');
+    Route::post('refresh', 'refresh');
+});
 
+Route::middleware('jwt.verify')->group(function() {
     Route::controller(CompanyController::class)->prefix('companies/')->group(function() {
         Route::get('', 'index');
         Route::get('{id}', 'show');
@@ -51,5 +53,23 @@ Route::middleware('jwt.verify')->group(function() {
         Route::get('{id}', 'find');
         Route::delete('{id}', 'delete');
         Route::post('{id}', 'update');
+    });
+
+    Route::controller(TasksController::class)->prefix('tasks/')->group(function() {
+        Route::post('', 'create');
+        Route::get('', 'index');
+        Route::post('{id}', 'update');
+        Route::get('{id}', 'show');
+        Route::delete('{id}', 'delete');
+    });
+
+    Route::controller(CheckController::class)->prefix('checks/')->group(function() {
+        Route::post('', 'create');
+        Route::post('check-in', 'checkIn');
+        Route::post('check-out', 'checkOut');
+        Route::get('', 'index');
+        Route::get('{id}', 'show');
+        Route::post('{id}', 'update');
+        Route::delete('{id}', 'delete');
     });
 });

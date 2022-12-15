@@ -9,9 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->dropForeign('assigned_to');
-            $table->dropColumn('assigned_to');
-            $table->uuid('assigned_to')->nullable();
+            $table->uuid('assigned_to')->nullable()->change();
         });
     }
 

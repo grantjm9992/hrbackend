@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Uuids;
+use App\ValueObject\CheckStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +12,8 @@ class Check extends Model
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory;
     use Uuids;
+
+    protected $table = 'check';
 
     protected $fillable = [
         'company_id',
@@ -26,10 +29,11 @@ class Check extends Model
         'date_ended',
     ];
 
-    public function close(int $dateEnded): void
+    public function close(string $dateEnded): void
     {
         $this->update([
-            'date_ended' => $dateEnded
+            'date_ended' => $dateEnded,
+            'status' => CheckStatus::closed(),
         ]);
         $this->updateTimestamps();
     }

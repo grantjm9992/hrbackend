@@ -42,8 +42,10 @@ class ProjectsController extends Controller
 
     public function listAll(Request $request): JsonResponse
     {
-        $projects = Projects::all()
-            ->sortBy('name')
+        $projects = Projects::query()
+            ->with('tasks.assignedTo')
+            ->orderBy('name')
+            ->get()
             ->toArray();
 
         return new JsonResponse([
