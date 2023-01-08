@@ -5,7 +5,9 @@ use App\Http\Controllers\CheckController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TasksController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +41,13 @@ Route::middleware('jwt.verify')->group(function() {
         Route::post('{id}', 'update');
     });
 
+    Route::controller(UsersController::class)->prefix('users/')->group(function() {
+        Route::get('', 'listAll');
+        Route::get('{id}', 'find');
+        Route::delete('{id}', 'delete');
+        Route::post('{id}', 'update');
+    });
+
     Route::controller( ClientsController::class)->prefix('clients/')->group(function () {
         Route::post('', 'create');
         Route::get('', 'listAll');
@@ -68,8 +77,15 @@ Route::middleware('jwt.verify')->group(function() {
         Route::post('check-in', 'checkIn');
         Route::post('check-out', 'checkOut');
         Route::get('', 'index');
+        Route::post('/user-calendar/{userId}', 'getCalendarForUser');
+        Route::post('/team-calendar', 'getCalendarForTeam');
         Route::get('{id}', 'show');
         Route::post('{id}', 'update');
         Route::delete('{id}', 'delete');
+    });
+
+    Route::controller(RoleController::class)->prefix('roles/')->group(function() {
+        Route::post('', 'create');
+        Route::get('', 'index');
     });
 });

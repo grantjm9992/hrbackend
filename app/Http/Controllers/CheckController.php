@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Check;
+use App\Models\User;
 use App\ValueObject\CheckStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -35,6 +36,58 @@ class CheckController extends Controller
         ]);
     }
 
+    public function getCalendarForTeam(Request $request): JsonResponse
+    {
+        $user = Auth::user()->toArray();
+        $this->validate($request, [
+            'date_from' => 'required|string',
+            'date_to' => 'required|string',
+        ]);
+
+        $users = User::query()
+            ->where('company_id', $user['company_id'])
+            ->get()
+            ->all();
+
+        $returnArray = [];
+        foreach ($users as $user_) {
+            $checks = Check::query()
+                ->where('user_id', $user_['id'])
+                ->where('date_started', '>=', $request->date_from)
+                ->where('date_ended', '<=', $request->date_to)
+                ->get()
+                ->all();
+            $returnArray[] = [
+                'user' => $user_,
+                'checks' => $checks,
+            ];
+        }
+
+        return new JsonResponse([
+            'message' => 'success',
+            'data' => $returnArray,
+        ]);
+    }
+
+    public function getCalendarForUser(string $userId, Request $request): JsonResponse
+    {
+        $this->validate($request, [
+            'date_from' => 'required|string',
+            'date_to' => 'required|string',
+        ]);
+
+        $checks = Check::query()
+            ->where('user_id', $userId)
+            ->where('date_started', '>=', $request->date_from)
+            ->where('date_ended', '<=', $request->date_to)
+            ->get()
+            ->all();
+
+        return new JsonResponse([
+            'message' => 'success',
+            'data' => $checks,
+        ]);
+    }
     public function create(Request $request): JsonResponse
     {
         $user = Auth::user()->toArray();

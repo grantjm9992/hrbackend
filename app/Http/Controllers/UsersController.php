@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clients;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ClientsController extends Controller
+class UsersController extends Controller
 {
     public function create(Request $request): JsonResponse
     {
@@ -34,7 +35,7 @@ class ClientsController extends Controller
 
     public function find(string $id): JsonResponse
     {
-        $client = Clients::find($id);
+        $client = User::find($id);
 
         return new JsonResponse([
             'message' => 'success',
@@ -44,7 +45,7 @@ class ClientsController extends Controller
 
     public function delete(string $id): JsonResponse
     {
-        Clients::destroy([$id]);
+        User::destroy([$id]);
 
         return new JsonResponse([
             'message' => 'success'
@@ -59,11 +60,12 @@ class ClientsController extends Controller
             'active' => 'required|boolean',
         ]);
 
-        $client = Clients::find($id);
+        $client = User::find($id);
         $client->update([
             'name' => $request->name,
             'description' => $request->description,
             'active' => $request->active,
+            'role_id' => $request->role ?? null
         ]);
 
         return new JsonResponse([
@@ -73,8 +75,9 @@ class ClientsController extends Controller
 
     public function listAll(Request $request): JsonResponse
     {
-        $clients = Clients::query()
-            ->with('projects')
+        $user = Auth::user()->toArray();
+        $clients = User::query()
+            ->where('company_id', $user['company_id'])
             ->orderBy('name');
 
         if ($request->query->get('name')) {
