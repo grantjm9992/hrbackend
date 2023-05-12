@@ -1,25 +1,27 @@
 <?php declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\TimeTrackingContext;
 
-use App\Models\Clients;
+use App\Http\Controllers\Controller;
+use App\Models\TimeTrackingContext\Projects;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ClientsController extends Controller
+class ProjectsController extends Controller
 {
     public function create(Request $request): JsonResponse
     {
-        $user = Auth::user()->toArray();
+        $user = Auth::user();
+
         $this->validate($request, [
             'name' => 'required|string',
-            'description' => 'string',
+            'client_id' => 'required|string',
         ]);
 
-        $client = Clients::create([
+        $project = Projects::create([
             'name' => $request->name,
-            'description' => $request->description,
+            'client_id' => $request->client_id,
             'company_id' => $user['company_id'],
             'active' => true,
         ]);
@@ -27,27 +29,32 @@ class ClientsController extends Controller
         return new JsonResponse([
             'message' => 'success',
             'data' => [
-                'id' => $client->id
-            ],
+                'id' => $project->id
+            ]
         ]);
     }
 
     public function find(string $id): JsonResponse
     {
-        $client = Clients::find($id);
+        $project = Projects::find($id);
 
         return new JsonResponse([
             'message' => 'success',
-            'data' => $client,
+            'data' => $project,
         ]);
     }
 
-    public function delete(string $id): JsonResponse
+    public function listAll(Request $request): JsonResponse
     {
-        Clients::destroy([$id]);
+        $projects = Projects::query()
+            ->with('tasks.assignedTo')
+            ->orderBy('name')
+            ->get()
+            ->toArray();
 
         return new JsonResponse([
-            'message' => 'success'
+            'message' => 'success',
+            'data' => $projects
         ]);
     }
 
@@ -55,37 +62,28 @@ class ClientsController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string',
-            'description' => 'string',
+            'clientId' => 'required|string',
             'active' => 'required|boolean',
         ]);
 
-        $client = Clients::find($id);
-        $client->update([
+        $project = Projects::find($id);
+        $project->update([
             'name' => $request->name,
-            'description' => $request->description,
+            'client_id' => $request->clientId,
             'active' => $request->active,
         ]);
 
         return new JsonResponse([
-            'message' => 'success',
+            'message' => 'success'
         ]);
     }
 
-    public function listAll(Request $request): JsonResponse
+    public function delete(string $id): JsonResponse
     {
-        $clients = Clients::query()
-            ->with('projects')
-            ->orderBy('name');
-
-        if ($request->query->get('name')) {
-            $clients->where('name', 'LIKE', "%" . $request->query->get('name') . "%");
-        }
-
-        $clients = $clients->get()->toArray();
+        Projects::destroy([$id]);
 
         return new JsonResponse([
-            'message' => 'success',
-            'data' => $clients,
+            'message' => 'success'
         ]);
     }
 }

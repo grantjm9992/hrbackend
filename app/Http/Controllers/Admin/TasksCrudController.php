@@ -24,7 +24,7 @@ class TasksCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Tasks::class);
+        CRUD::setModel( \App\Models\TimeTrackingContext\Tasks::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/tasks');
         CRUD::setEntityNameStrings('tasks', 'tasks');
     }

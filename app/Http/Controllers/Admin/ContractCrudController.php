@@ -24,7 +24,7 @@ class ContractCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Contract::class);
+        CRUD::setModel( \App\Models\HRContext\Contract::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/contract');
         CRUD::setEntityNameStrings('contract', 'contracts');
     }

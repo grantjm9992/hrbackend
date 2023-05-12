@@ -24,7 +24,7 @@ class CompanyCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Company::class);
+        CRUD::setModel( \App\Models\CoreContext\Company::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/company');
         CRUD::setEntityNameStrings('company', 'companies');
     }

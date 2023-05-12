@@ -1,7 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Models;
+namespace App\Models\CoreContext;
 
+use App\Models\TimeTrackingContext\Clients;
 use App\Traits\Uuids;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

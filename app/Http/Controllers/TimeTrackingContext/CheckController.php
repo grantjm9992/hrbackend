@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\TimeTrackingContext;
 
-use App\Models\Check;
-use App\Models\User;
+use App\Http\Controllers\Controller;
+use App\Models\CoreContext\User;
+use App\Models\TimeTrackingContext\Check;
 use App\ValueObject\CheckStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

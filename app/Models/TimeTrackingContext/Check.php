@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Models;
+namespace App\Models\TimeTrackingContext;
 
 use App\Traits\Uuids;
 use App\ValueObject\CheckStatus;
@@ -12,8 +12,6 @@ class Check extends Model
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory;
     use Uuids;
-
-    protected $table = 'check';
 
     protected $fillable = [
         'company_id',

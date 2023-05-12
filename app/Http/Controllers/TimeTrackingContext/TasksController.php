@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\TimeTrackingContext;
 
-use App\Models\Tasks;
+use App\Http\Controllers\Controller;
+use App\Models\TimeTrackingContext\Tasks;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

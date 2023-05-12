@@ -24,7 +24,7 @@ class RoleCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Role::class);
+        CRUD::setModel( \App\Models\CoreContext\Role::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/role');
         CRUD::setEntityNameStrings('role', 'roles');
     }

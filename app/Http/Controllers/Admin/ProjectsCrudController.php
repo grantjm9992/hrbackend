@@ -24,7 +24,7 @@ class ProjectsCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Projects::class);
+        CRUD::setModel( \App\Models\TimeTrackingContext\Projects::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/projects');
         CRUD::setEntityNameStrings('projects', 'projects');
     }

@@ -24,7 +24,7 @@ class CheckCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Check::class);
+        CRUD::setModel( \App\Models\TimeTrackingContext\Check::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/check');
         CRUD::setEntityNameStrings('check', 'checks');
     }

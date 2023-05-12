@@ -24,7 +24,7 @@ class ClientsCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Clients::class);
+        CRUD::setModel( \App\Models\TimeTrackingContext\Clients::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/clients');
         CRUD::setEntityNameStrings('clients', 'clients');
     }

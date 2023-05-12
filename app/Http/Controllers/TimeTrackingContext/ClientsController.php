@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\TimeTrackingContext;
 
-use App\Models\Clients;
-use App\Models\User;
+use App\Http\Controllers\Controller;
+use App\Models\TimeTrackingContext\Clients;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class UsersController extends Controller
+class ClientsController extends Controller
 {
     public function create(Request $request): JsonResponse
     {
@@ -35,7 +35,7 @@ class UsersController extends Controller
 
     public function find(string $id): JsonResponse
     {
-        $client = User::find($id);
+        $client = Clients::find($id);
 
         return new JsonResponse([
             'message' => 'success',
@@ -45,7 +45,7 @@ class UsersController extends Controller
 
     public function delete(string $id): JsonResponse
     {
-        User::destroy([$id]);
+        Clients::destroy([$id]);
 
         return new JsonResponse([
             'message' => 'success'
@@ -60,12 +60,11 @@ class UsersController extends Controller
             'active' => 'required|boolean',
         ]);
 
-        $client = User::find($id);
+        $client = Clients::find($id);
         $client->update([
             'name' => $request->name,
             'description' => $request->description,
             'active' => $request->active,
-            'role_id' => $request->role ?? null
         ]);
 
         return new JsonResponse([
@@ -75,9 +74,8 @@ class UsersController extends Controller
 
     public function listAll(Request $request): JsonResponse
     {
-        $user = Auth::user()->toArray();
-        $clients = User::query()
-            ->where('company_id', $user['company_id'])
+        $clients = Clients::query()
+            ->with('projects')
             ->orderBy('name');
 
         if ($request->query->get('name')) {

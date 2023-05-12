@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CheckController;
-use App\Http\Controllers\ClientsController;
-use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\ProjectsController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\TasksController;
-use App\Http\Controllers\UsersController;
+use App\Http\Controllers\CoreContext\AuthController;
+use App\Http\Controllers\CoreContext\CompanyController;
+use App\Http\Controllers\CoreContext\RoleController;
+use App\Http\Controllers\CoreContext\UsersController;
+use App\Http\Controllers\TimeTrackingContext\CheckController;
+use App\Http\Controllers\TimeTrackingContext\ClientsController;
+use App\Http\Controllers\TimeTrackingContext\ProjectsController;
+use App\Http\Controllers\TimeTrackingContext\TasksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

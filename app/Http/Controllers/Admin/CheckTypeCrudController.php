@@ -24,7 +24,7 @@ class CheckTypeCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\CheckType::class);
+        CRUD::setModel( \App\Models\TimeTrackingContext\CheckType::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/check-type');
         CRUD::setEntityNameStrings('check type', 'check types');
     }

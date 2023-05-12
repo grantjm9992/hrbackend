@@ -9,6 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::drop('checks');
         Schema::create('checks', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('company_id');
