@@ -3,19 +3,21 @@
 namespace App\Http\Controllers\CoreContext;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ConfirmRegistration;
 use App\Models\CoreContext\Company;
 use App\Models\CoreContext\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:api', [
-            'except' => ['login', 'register'],
+            'except' => ['login', 'register', 'validateEmail'],
         ]);
     }
 
@@ -26,6 +28,7 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         $credentials = $request->only('email', 'password');
+        $credentials['email_confirmed'] = 1;
 
         $token = Auth::attempt($credentials);
         if (!$token) {
@@ -54,7 +57,7 @@ class AuthController extends Controller
             'surname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'companyName' => 'required|string|max:255',
+            'company_name' => 'required|string|max:255',
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -63,8 +66,8 @@ class AuthController extends Controller
         }
 
         $company = Company::create([
-            'name' => $request->companyName,
-            'number_of_employees' => $request->numberOfEmployees,
+            'name' => $request->company_name,
+            'number_of_employees' => $request->number_of_employees ?? 0,
         ]);
 
         $user = User::create([
@@ -81,6 +84,8 @@ class AuthController extends Controller
 
         $token = Auth::login($user);
 
+        Mail::to($user->email)->send(new ConfirmRegistration(base64_encode($user->id)));
+
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',
@@ -89,6 +94,29 @@ class AuthController extends Controller
                 'token' => $token,
                 'type' => 'bearer',
             ],
+        ]);
+    }
+
+    public function validateEmail(Request $request): JsonResponse
+    {
+        $request->validate([
+            'token' => 'required|string',
+        ]);
+
+        $id = base64_decode($request->token);
+
+        /** @var User $user */
+        $user = User::find($id);
+        if (null === $user) {
+            throw new \Exception('User not found');
+        }
+
+        $user->setAttribute('email_confirmed', 1);
+        $user->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Successfully updated',
         ]);
     }
 
