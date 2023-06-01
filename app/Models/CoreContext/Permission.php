@@ -2,7 +2,17 @@
 
 namespace App\Models\CoreContext;
 
-class Permission
-{
+use App\Traits\Uuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
+class Permission extends Model
+{
+    use HasFactory;
+    use Uuids;
+
+    protected $fillable = [
+        'name',
+        'code',
+    ];
 }

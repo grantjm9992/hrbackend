@@ -4,12 +4,17 @@ namespace App\Http\Controllers\TimeTrackingContext;
 
 use App\Http\Controllers\Controller;
 use App\Models\TimeTrackingContext\Projects;
+use App\Services\JiraConnectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ProjectsController extends Controller
 {
+    public function __construct(private readonly JiraConnectService $jiraConnectService)
+    {
+    }
+
     public function create(Request $request): JsonResponse
     {
         $user = Auth::user();
@@ -62,20 +67,27 @@ class ProjectsController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string',
-            'clientId' => 'required|string',
+            'client_id' => 'required|string',
             'active' => 'required|boolean',
         ]);
 
         $project = Projects::find($id);
         $project->update([
             'name' => $request->name,
-            'client_id' => $request->clientId,
+            'client_id' => $request->client_id,
             'active' => $request->active,
         ]);
 
         return new JsonResponse([
             'message' => 'success'
         ]);
+    }
+
+    public function getJiraProjects(Request $request): JsonResponse
+    {
+        $jiraProjects = $this->jiraConnectService->__invoke('issue');
+
+        return response()->json($jiraProjects);
     }
 
     public function delete(string $id): JsonResponse

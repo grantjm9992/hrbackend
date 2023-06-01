@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\CoreContext;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ConfirmRegistration;
+use App\Mail\UserCreatedEmail;
 use App\Models\CoreContext\User;
 use App\Models\TimeTrackingContext\Clients;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller
 {
@@ -16,20 +19,22 @@ class UsersController extends Controller
         $user = Auth::user()->toArray();
         $this->validate($request, [
             'name' => 'required|string',
-            'description' => 'string',
+            'email' => 'required|string|email|max:255|unique:users',
+            'surname' => 'required|string',
+            'user_role' => 'required|string',
+            'role_id' => 'string|nullable',
         ]);
 
-        $client = Clients::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'company_id' => $user['company_id'],
-            'active' => true,
-        ]);
+        $dataArray = $request->toArray();
+        $dataArray['company_id'] = $user['company_id'];
+
+        $user = User::create($dataArray);
+        Mail::to($user->email)->send(new UserCreatedEmail(base64_encode($user->id)));
 
         return new JsonResponse([
             'message' => 'success',
             'data' => [
-                'id' => $client->id
+                'id' => $user->id
             ],
         ]);
     }
@@ -57,17 +62,14 @@ class UsersController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string',
-            'description' => 'string',
-            'active' => 'required|boolean',
+            'email' => 'required|string',
+            'surname' => 'required|string',
+            'user_role' => 'required|string',
+            'role_id' => 'string|nullable',
         ]);
 
         $client = User::find($id);
-        $client->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'active' => $request->active,
-            'role_id' => $request->role ?? null
-        ]);
+        $client->update($request->toArray());
 
         return new JsonResponse([
             'message' => 'success',

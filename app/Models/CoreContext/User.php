@@ -8,6 +8,7 @@ use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
@@ -16,6 +17,7 @@ class User extends Authenticatable implements JWTSubject
     use HasApiTokens;
     use HasFactory;
     use Notifiable;
+    use Billable;
     use Uuids;
 
     /**
@@ -34,6 +36,10 @@ class User extends Authenticatable implements JWTSubject
         'email_confirmed',
     ];
 
+    protected $appends = [
+        'title',
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -42,6 +48,8 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+        'email_confirmed',
+        'created_at',
     ];
 
     /**
@@ -61,5 +69,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [];
+    }
+
+    public function getTitleAttribute(): string
+    {
+        return $this->name . ' ' . $this->surname;
     }
 }

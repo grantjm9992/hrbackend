@@ -13,6 +13,10 @@ class Check extends Model
     use HasFactory;
     use Uuids;
 
+    protected $appends = [
+        'start', 'end', 'title', 'resourceId', 'classNames',
+    ];
+
     protected $fillable = [
         'company_id',
         'user_id',
@@ -36,4 +40,28 @@ class Check extends Model
         $this->updateTimestamps();
     }
 
+    public function getTitleAttribute(): string
+    {
+        return 'ok';
+    }
+
+    public function getStartAttribute(): string
+    {
+        return $this->date_started;
+    }
+
+    public function getEndAttribute(): ?string
+    {
+        return $this->date_ended ?? null;
+    }
+
+    public function getResourceIdAttribute(): string
+    {
+        return $this->user_id;
+    }
+
+    public function getClassNamesAttribute(): array
+    {
+        return $this->date_ended ? [] : ['progress-bar', 'progress-bar-striped', 'active'];
+    }
 }

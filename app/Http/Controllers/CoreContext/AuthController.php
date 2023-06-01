@@ -5,19 +5,26 @@ namespace App\Http\Controllers\CoreContext;
 use App\Http\Controllers\Controller;
 use App\Mail\ConfirmRegistration;
 use App\Models\CoreContext\Company;
+use App\Models\CoreContext\Subscription;
 use App\Models\CoreContext\User;
+use App\Models\TimeTrackingContext\Check;
+use App\ValueObject\CheckStatus;
+use App\ValueObject\SubscriptionStatus;
+use App\ValueObject\SubscriptionType;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use ReflectionClass;
 
 class AuthController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:api', [
-            'except' => ['login', 'register', 'validateEmail'],
+            'except' => ['login', 'register', 'validateEmail', 'setPassword'],
         ]);
     }
 
@@ -38,11 +45,19 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = Auth::user()->toArray();
+        $company = Company::query()->where('id', $user['company_id'])->with('subscription')->get()->first();
+
+        $check = Check::query()
+            ->where('user_id', $user['id'])
+            ->where('status', CheckStatus::open())
+            ->first();
 
         return response()->json([
             'status' => 'success',
             'user' => $user,
+            'check' => $check,
+            'company' => $company,
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -97,6 +112,31 @@ class AuthController extends Controller
         ]);
     }
 
+    public function setPassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'token' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $id = base64_decode($request->token);
+
+        /** @var User $user */
+        $user = User::find($id);
+        if (null === $user) {
+            throw new \Exception('User not found');
+        }
+
+        $user->setAttribute('email_confirmed', 1);
+        $user->setAttribute('password', Hash::make($request->password));
+        $user->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Successfully updated',
+        ]);
+    }
+
     public function validateEmail(Request $request): JsonResponse
     {
         $request->validate([
@@ -132,9 +172,17 @@ class AuthController extends Controller
 
     public function refresh(): JsonResponse
     {
+        $user = Auth::user();
+        $check = Check::query()
+            ->where('user_id', $user['id'])
+            ->where('status', CheckStatus::open())
+            ->first();
+        $company = Company::query()->where('id', $user['company_id'])->with('subscription')->get()->first();
         return response()->json([
             'status' => 'success',
-            'user' => Auth::user(),
+            'user' => $user,
+            'check' => $check,
+            'company' => $company,
             'authorisation' => [
                 'token' => Auth::refresh(),
                 'type' => 'bearer',

@@ -15,7 +15,7 @@ class ClientsController extends Controller
         $user = Auth::user()->toArray();
         $this->validate($request, [
             'name' => 'required|string',
-            'description' => 'string',
+            'description' => 'string|nullable',
         ]);
 
         $client = Clients::create([
@@ -56,7 +56,7 @@ class ClientsController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string',
-            'description' => 'string',
+            'description' => 'string|nullable',
             'active' => 'required|boolean',
         ]);
 

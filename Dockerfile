@@ -63,6 +63,7 @@ COPY ./docker/general/laravel.conf /etc/apache2/sites-available/laravel.conf
 COPY ./docker/general/laravel-ssl.conf /etc/apache2/sites-available/laravel-ssl.conf
 RUN a2ensite laravel.conf && a2ensite laravel-ssl
 COPY ./docker/$BUILD_ARGUMENT_ENV/php.ini /usr/local/etc/php/php.ini
+RUN docker-php-ext-install bcmath
 
 # enable apache modules
 RUN a2enmod rewrite

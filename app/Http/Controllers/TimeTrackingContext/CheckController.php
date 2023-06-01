@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CoreContext\User;
 use App\Models\TimeTrackingContext\Check;
 use App\ValueObject\CheckStatus;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,8 +18,13 @@ class CheckController extends Controller
         $user = Auth::user()->toArray();
 
         $checks = Check::query()
-            ->where('company_id', $user['company_id'])
-            ->get()
+            ->where('company_id', $user['company_id']);
+
+        if ($request->query->get('user_id')) {
+            $checks->where('user_id', $request->query->get('user_id'));
+        }
+
+        $checks = $checks->get()
             ->all();
 
         return new JsonResponse([
@@ -139,8 +145,9 @@ class CheckController extends Controller
             'task_id' => 'string',
             'project_id' => 'string',
             'client_id' => 'string',
-            'date_started' => 'required|string',
         ]);
+
+        $dateStarted = Carbon::now()->format('Y-m-d H:i:s');
 
         Check::create([
             'user_id' => $user['id'],
@@ -150,7 +157,7 @@ class CheckController extends Controller
             'task_id' => $request->task_id,
             'project_id' => $request->project_id,
             'client_id' => $request->client_id,
-            'date_started' => $request->date_started,
+            'date_started' => $dateStarted,
         ]);
 
         return new JsonResponse([
@@ -161,7 +168,6 @@ class CheckController extends Controller
     public function checkOut(Request $request): JsonResponse
     {
         $this->validate($request, [
-            'date_ended' => 'required|string',
         ]);
 
         $user = Auth::user()->toArray();
@@ -181,7 +187,8 @@ class CheckController extends Controller
             ], 401);
         }
 
-        $check->close($request->date_ended);
+        $dateEnded = Carbon::now()->format('Y-m-d H:i:s');
+        $check->close($dateEnded);
 
         return new JsonResponse([
             'message' => 'success'

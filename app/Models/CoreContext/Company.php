@@ -8,6 +8,7 @@ use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 
 class Company extends Model
 {
@@ -35,5 +36,11 @@ class Company extends Model
     public function employees(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+
+    public function subscription(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
     }
 }

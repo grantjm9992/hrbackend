@@ -29,8 +29,8 @@ class TasksController extends Controller
         $this->validate($request, [
             'project_id' => 'required|string',
             'name' => 'required|string',
-            'description' => 'string',
-            'assigned_to' => 'string',
+            'description' => 'string|nullable',
+            'assigned_to' => 'string|nullable',
         ]);
 
         $user = Auth::user()->toArray();
@@ -68,8 +68,8 @@ class TasksController extends Controller
         $this->validate($request, [
             'project_id' => 'required|string',
             'name' => 'required|string',
-            'description' => 'string',
-            'assigned_to' => 'string',
+            'description' => 'string|nullable',
+            'assigned_to' => 'string|nullable',
         ]);
 
         $task = Tasks::find($id);
