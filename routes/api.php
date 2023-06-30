@@ -6,6 +6,7 @@ use App\Http\Controllers\CoreContext\RoleController;
 use App\Http\Controllers\CoreContext\SubscriptionController;
 use App\Http\Controllers\CoreContext\UsersController;
 use App\Http\Controllers\TimeTrackingContext\CheckController;
+use App\Http\Controllers\TimeTrackingContext\CheckReportController;
 use App\Http\Controllers\TimeTrackingContext\ClientsController;
 use App\Http\Controllers\TimeTrackingContext\ProjectsController;
 use App\Http\Controllers\TimeTrackingContext\TasksController;
@@ -101,6 +102,10 @@ Route::middleware('jwt.verify')->group(function() {
                 Route::get('{id}', 'show');
                 Route::post('{id}', 'update');
                 Route::delete('{id}', 'delete');
+            });
+
+            Route::controller(CheckReportController::class)->prefix('check-report/')->group(function() {
+                Route::get('', 'hoursWorked');
             });
         });
     });
