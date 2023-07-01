@@ -35,6 +35,7 @@ class SubscriptionController extends Controller
                 'token' => $request->stripe_token,
             ]
         ]);
+        $user->createAsStripeCustomer();
         $user->updateDefaultPaymentMethod($paymentMethod);
 
         $user->newSubscription('Monthly', 'price_1NCiYAIE24BO5pGyzoACzzpg')->create($user->defaultPaymentMethod()->asStripePaymentMethod());
