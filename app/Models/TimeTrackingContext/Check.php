@@ -2,10 +2,13 @@
 
 namespace App\Models\TimeTrackingContext;
 
+use App\Models\CRMContext\Task;
 use App\Traits\Uuids;
 use App\ValueObject\CheckStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Check extends Model
 {
@@ -42,7 +45,7 @@ class Check extends Model
 
     public function getTitleAttribute(): string
     {
-        return 'ok';
+        return $this->tasks ? $this->tasks->name : 'ok';
     }
 
     public function getStartAttribute(): string
@@ -63,5 +66,10 @@ class Check extends Model
     public function getClassNamesAttribute(): array
     {
         return $this->date_ended ? [] : ['progress-bar', 'progress-bar-striped', 'active'];
+    }
+
+    public function tasks(): BelongsTo
+    {
+        return $this->belongsTo(Tasks::class, 'task_id');
     }
 }

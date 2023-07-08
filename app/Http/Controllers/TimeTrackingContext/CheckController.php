@@ -24,7 +24,7 @@ class CheckController extends Controller
             $checks->where('user_id', $request->query->get('user_id'));
         }
 
-        $checks = $checks->get()
+        $checks = $checks->with('tasks')->get()
             ->all();
 
         return new JsonResponse([
