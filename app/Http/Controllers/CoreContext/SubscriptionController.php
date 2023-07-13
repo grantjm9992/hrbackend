@@ -81,4 +81,11 @@ class SubscriptionController extends Controller
 
         return $priceArray[$users][$type] ?? 100;
     }
+
+    public function getStripeToken(): JsonResponse
+    {
+        return response()->json([
+            'token' => env('STRIPE_SECRET'),
+        ]);
+    }
 }

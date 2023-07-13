@@ -10,6 +10,7 @@ use App\Models\TimeTrackingContext\Clients;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller
@@ -70,6 +71,21 @@ class UsersController extends Controller
 
         $client = User::find($id);
         $client->update($request->toArray());
+
+        return new JsonResponse([
+            'message' => 'success',
+        ]);
+    }
+
+    public function updatePassword(Request $request, string $id): JsonResponse
+    {
+        $this->validate($request, [
+            'password' => 'required|string',
+        ]);
+
+        $user = User::find($id);
+        $user->password = Hash::make($request->password);
+        $user->save();
 
         return new JsonResponse([
             'message' => 'success',

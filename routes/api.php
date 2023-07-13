@@ -47,6 +47,7 @@ Route::middleware('jwt.verify')->group(function() {
     });
     Route::controller(SubscriptionController::class)->prefix('subscription/')->group(function() {
         Route::post('', 'create');
+        Route::get('stripe-token', 'getStripeToken');
     });
 
     Route::middleware('subscription')->group(function () {
@@ -57,6 +58,7 @@ Route::middleware('jwt.verify')->group(function() {
             Route::get('{id}', 'find');
             Route::delete('{id}', 'delete');
             Route::post('{id}', 'update');
+            Route::post('update-password/{id}', 'updatePassword');
         });
 
         Route::controller(RoleController::class)->prefix('roles/')->group(function() {

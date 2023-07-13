@@ -4,6 +4,7 @@ namespace App\Http\Controllers\TimeTrackingContext;
 
 use App\Http\Controllers\Controller;
 use App\Models\TimeTrackingContext\Projects;
+use App\Models\TimeTrackingContext\Tasks;
 use App\Services\JiraConnectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -94,6 +95,13 @@ class ProjectsController extends Controller
 
     public function delete(string $id): JsonResponse
     {
+        $tasks = Tasks::query()
+            ->where('project_id', $id)
+            ->get()->toArray();
+        if (count($tasks) > 0) {
+            throw new \Exception('Cannot delete projects with existing tasks');
+        }
+
         Projects::destroy([$id]);
 
         return new JsonResponse([

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\TimeTrackingContext;
 
 use App\Http\Controllers\Controller;
 use App\Models\TimeTrackingContext\Clients;
+use App\Models\TimeTrackingContext\Projects;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,6 +46,12 @@ class ClientsController extends Controller
 
     public function delete(string $id): JsonResponse
     {
+        $projects = Projects::query()
+            ->where('client_id', $id)
+            ->get()->toArray();
+        if (count($projects) > 0) {
+            throw new \Exception('Cannot delete clients with existing projects');
+        }
         Clients::destroy([$id]);
 
         return new JsonResponse([

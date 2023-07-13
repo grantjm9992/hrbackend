@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\TimeTrackingContext;
 
 use App\Http\Controllers\Controller;
+use App\Models\TimeTrackingContext\Check;
 use App\Models\TimeTrackingContext\Tasks;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -87,6 +88,12 @@ class TasksController extends Controller
 
     public function delete(string $id): JsonResponse
     {
+        $checks = Check::query()
+            ->where('task_id', $id)
+            ->get()->toArray();
+        if (count($checks) > 0) {
+            throw new \Exception('Cannot delete tasks with existing checks');
+        }
         Tasks::destroy($id);
 
         return new JsonResponse([

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TimeTrackingContext\Check;
 use App\ValueObject\CheckStatus;
 use Carbon\Carbon;
+use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,7 @@ class CheckReportController extends Controller
                 '>=',
                 Carbon::now()
                     ->startOfWeek(1)
-                    ->subWeek()
+                    ->subDays(30)
                     ->setTime(0, 0, 0)
                     ->format('Y-m-d H:i:s')
             )->where(
@@ -41,7 +42,10 @@ class CheckReportController extends Controller
                 Carbon::now()
                     ->startOfWeek(1)
                     ->setTime(0, 0, 0)
-                    ->format('Y-m-d H:i:s');
+                    ->format('Y-m-d H:i:s') && $check['date_started'] >=
+                Carbon::now()
+                    ->startOfWeek(1)
+                    ->setTime(0, 0, 0);
         });
         $thisWeek = array_filter($checks, function ($check) {
             return $check['date_started'] >=
@@ -50,9 +54,11 @@ class CheckReportController extends Controller
                     ->setTime(0, 0, 0)
                     ->format('Y-m-d H:i:s');
         });
+
         return response()->json([
             'thisWeek' => $this->getTotalTimeForArrayOfChecks($thisWeek),
             'lastWeek' => $this->getTotalTimeForArrayOfChecks($lastWeek),
+            'lastThirtyDays' => $this->getTotalTimeForArrayOfChecks($checks)
         ]);
     }
 
