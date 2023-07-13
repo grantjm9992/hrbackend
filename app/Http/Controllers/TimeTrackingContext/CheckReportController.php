@@ -71,3 +71,4 @@ class CheckReportController extends Controller
         return $total;
     }
 }
+
