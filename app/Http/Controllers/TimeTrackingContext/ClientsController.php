@@ -74,7 +74,9 @@ class ClientsController extends Controller
 
     public function listAll(Request $request): JsonResponse
     {
+        $user = Auth::user()->toArray();
         $clients = Clients::query()
+            ->where('company_id', $user['company_id'])
             ->with('projects')
             ->orderBy('name');
 

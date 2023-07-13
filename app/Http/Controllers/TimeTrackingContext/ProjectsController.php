@@ -51,7 +51,9 @@ class ProjectsController extends Controller
 
     public function listAll(Request $request): JsonResponse
     {
+        $user = Auth::user()->toArray();
         $projects = Projects::query()
+            ->where('company_id', $user['company_id'])
             ->with('tasks.assignedTo')
             ->orderBy('name')
             ->get()
