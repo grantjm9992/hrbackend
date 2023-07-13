@@ -19,11 +19,11 @@ class SubscriptionMiddleware
             ->first();
 
         if (!$subscription) {
-            return response()->json(['status' => 'no_subscription_found'], 403);
+            // return response()->json(['status' => 'no_subscription_found'], 403);
         }
 
         if ($subscription->status !== SubscriptionStatus::ACTIVE) {
-            return response()->json(['status' => 'no_active_subscription_found'], 403);
+            // return response()->json(['status' => 'no_active_subscription_found'], 403);
         }
 
         return $next($request);
