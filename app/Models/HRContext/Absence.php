@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace App\Models\HRContext;
 
@@ -6,7 +6,7 @@ use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Contract extends Model
+class Absence extends Model
 {
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory;
@@ -15,7 +15,10 @@ class Contract extends Model
     protected $fillable = [
         'company_id',
         'user_id',
-        'hours',
-        'modality',
+        'start_date',
+        'end_date',
+        'notes',
+        'status',
+        'absence_type_id',
     ];
 }

@@ -58,7 +58,7 @@ class Check extends Model
         return $this->date_ended ?? null;
     }
 
-    public function getResourceIdAttribute(): string
+    public function getResourceIdAttribute(): ?string
     {
         return $this->user_id;
     }

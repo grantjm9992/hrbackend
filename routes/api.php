@@ -108,6 +108,10 @@ Route::middleware('jwt.verify')->group(function() {
 
             Route::controller(CheckReportController::class)->prefix('check-report/')->group(function() {
                 Route::get('', 'hoursWorked');
+                Route::get('user', 'hoursByEmployee');
+                Route::get('task', 'hoursByTask');
+                Route::get('project', 'hoursByProject');
+                Route::get('client', 'hoursByClient');
             });
         });
     });

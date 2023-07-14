@@ -70,5 +70,133 @@ class CheckReportController extends Controller
         }
         return $total;
     }
+
+    public function hoursByEmployee(Request $request): JsonResponse
+    {
+        $user = Auth::user()->toArray();
+        $checks = Check::query()
+            ->select('checks.date_started', 'checks.date_ended', 'users.name', 'users.surname', 'checks.user_id')
+            ->leftJoin('users', 'users.id', '=', 'checks.user_id')
+            ->where('checks.date_started', '>=', Carbon::parse($request->from)->format('Y-m-d 00:00:00'))
+            ->where('checks.date_started', '<=', Carbon::parse($request->to)->format('Y-m-d 23:59:59'))
+            ->where('checks.company_id', $user['company_id'])
+            ->get()->toArray();
+        $returnArray = [];
+        $toggleArray = [];
+        foreach ($checks as $check) {
+            $key = $check['user_id'];
+            if (array_key_exists($key, $toggleArray)) {
+                $toggleArray[$key]['time'] += floor(($this->getTotalTimeForArrayOfChecks([$check])/3600));
+            } else {
+                $toggleArray[$key] = [
+                    'name' => $check['name'],
+                    'surname' => $check['surname'],
+                    'time' => floor(($this->getTotalTimeForArrayOfChecks([$check])/3600)),
+                ];
+            }
+        }
+
+        foreach ($toggleArray as $key => $value) {
+            $returnArray[] = $value;
+        }
+
+        return response()->json($returnArray);
+    }
+
+    public function hoursByClient(Request $request): JsonResponse
+    {
+        $user = Auth::user()->toArray();
+        $checks = Check::query()
+            ->select('checks.date_started', 'checks.date_ended', 'clients.name', 'projects.client_id')
+            ->leftJoin('tasks', 'tasks.id', '=', 'checks.task_id')
+            ->leftJoin('projects', 'projects.id', '=', 'tasks.project_id')
+            ->leftJoin('clients', 'clients.id', '=', 'projects.client_id')
+            ->where('checks.date_started', '>=', Carbon::parse($request->from)->format('Y-m-d 00:00:00'))
+            ->where('checks.date_started', '<=', Carbon::parse($request->to)->format('Y-m-d 23:59:59'))
+            ->where('checks.company_id', $user['company_id'])
+            ->get()->toArray();
+        $returnArray = [];
+        $toggleArray = [];
+        foreach ($checks as $check) {
+            $key = $check['client_id'];
+            if (array_key_exists($key, $toggleArray)) {
+                $toggleArray[$key]['time'] += floor(($this->getTotalTimeForArrayOfChecks([$check])/3600));
+            } else {
+                $toggleArray[$key] = [
+                    'name' => $check['name'] ?? 'No client',
+                    'time' => floor(($this->getTotalTimeForArrayOfChecks([$check])/3600)),
+                ];
+            }
+        }
+
+        foreach ($toggleArray as $key => $value) {
+            $returnArray[] = $value;
+        }
+
+        return response()->json($returnArray);
+    }
+
+    public function hoursByProject(Request $request): JsonResponse
+    {
+        $user = Auth::user()->toArray();
+        $checks = Check::query()
+            ->select('checks.date_started', 'checks.date_ended', 'projects.name', 'tasks.project_id')
+            ->leftJoin('tasks', 'tasks.id', '=', 'checks.task_id')
+            ->leftJoin('projects', 'projects.id', '=', 'tasks.project_id')
+            ->where('checks.date_started', '>=', Carbon::parse($request->from)->format('Y-m-d 00:00:00'))
+            ->where('checks.date_started', '<=', Carbon::parse($request->to)->format('Y-m-d 23:59:59'))
+            ->where('checks.company_id', $user['company_id'])
+            ->get()->toArray();
+        $returnArray = [];
+        $toggleArray = [];
+        foreach ($checks as $check) {
+            $key = $check['project_id'];
+            if (array_key_exists($key, $toggleArray)) {
+                $toggleArray[$key]['time'] += floor(($this->getTotalTimeForArrayOfChecks([$check])/3600));
+            } else {
+                $toggleArray[$key] = [
+                    'name' => $check['name'] ?? 'No project',
+                    'time' => floor(($this->getTotalTimeForArrayOfChecks([$check])/3600)),
+                ];
+            }
+        }
+
+        foreach ($toggleArray as $key => $value) {
+            $returnArray[] = $value;
+        }
+
+        return response()->json($returnArray);
+    }
+
+    public function hoursByTask(Request $request): JsonResponse
+    {
+        $user = Auth::user()->toArray();
+        $checks = Check::query()
+            ->select('checks.date_started', 'checks.date_ended', 'tasks.name', 'checks.task_id')
+            ->leftJoin('tasks', 'tasks.id', '=', 'checks.task_id')
+            ->where('checks.date_started', '>=', Carbon::parse($request->from)->format('Y-m-d 00:00:00'))
+            ->where('checks.date_started', '<=', Carbon::parse($request->to)->format('Y-m-d 23:59:59'))
+            ->where('checks.company_id', $user['company_id'])
+            ->get()->toArray();
+        $returnArray = [];
+        $toggleArray = [];
+        foreach ($checks as $check) {
+            $key = $check['task_id'];
+            if (array_key_exists($key, $toggleArray)) {
+                $toggleArray[$key]['time'] += floor(($this->getTotalTimeForArrayOfChecks([$check])/3600));
+            } else {
+                $toggleArray[$key] = [
+                    'name' => $check['name'] ?? 'No task',
+                    'time' => floor(($this->getTotalTimeForArrayOfChecks([$check])/3600)),
+                ];
+            }
+        }
+
+        foreach ($toggleArray as $key => $value) {
+            $returnArray[] = $value;
+        }
+
+        return response()->json($returnArray);
+    }
 }
 
