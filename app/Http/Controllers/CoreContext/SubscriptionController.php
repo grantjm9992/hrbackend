@@ -62,6 +62,17 @@ class SubscriptionController extends Controller
         return response()->json([]);
     }
 
+    public function getSubscription()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $subscriptions = Subscription::query()
+            ->where('company_id', $user->getAttribute('company_id'))
+            ->where('status', 'active')
+            ->first()->toArray();
+
+        return response()->json(['data' => $subscriptions]);
+    }
     private static function getPrice(int $users, string $type): int
     {
         $priceArray = [

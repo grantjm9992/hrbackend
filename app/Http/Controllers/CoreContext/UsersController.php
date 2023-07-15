@@ -52,7 +52,8 @@ class UsersController extends Controller
 
     public function delete(string $id): JsonResponse
     {
-        User::destroy([$id]);
+        $user = User::find($id);
+        $user->delete();
 
         return new JsonResponse([
             'message' => 'success'
@@ -97,6 +98,7 @@ class UsersController extends Controller
         $user = Auth::user()->toArray();
         $clients = User::query()
             ->where('company_id', $user['company_id'])
+            ->where('deleted_at', '=', null)
             ->orderBy('name');
 
         if ($request->query->get('name')) {

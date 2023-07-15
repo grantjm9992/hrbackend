@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\CoreContext;
 
 use App\Traits\Uuids;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -74,5 +75,12 @@ class User extends Authenticatable implements JWTSubject
     public function getTitleAttribute(): string
     {
         return $this->name . ' ' . $this->surname;
+    }
+
+    public function delete(): void
+    {
+        $this->update([
+            'deleted_at' => Carbon::now()->format('Y-m-d H:i:s'),
+        ]);
     }
 }

@@ -47,6 +47,7 @@ Route::middleware('jwt.verify')->group(function() {
     });
     Route::controller(SubscriptionController::class)->prefix('subscription/')->group(function() {
         Route::post('', 'create');
+        Route::get('', 'getSubscription');
         Route::get('stripe-token', 'getStripeToken');
     });
 

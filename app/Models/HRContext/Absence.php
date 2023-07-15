@@ -17,7 +17,7 @@ class Absence extends Model
         'user_id',
         'start_date',
         'end_date',
-        'notes',
+        'comments',
         'status',
         'absence_type_id',
     ];
