@@ -49,7 +49,7 @@ class Check extends Model
         return $this->tasks ? $this->tasks->name : 'ok';
     }
 
-    public function getStartAttribute(): string
+    public function getStartAttribute(): ?string
     {
         return $this->date_started;
     }
