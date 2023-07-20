@@ -2,6 +2,7 @@
 
 namespace App\Models\TimeTrackingContext;
 
+use App\Models\CoreContext\User;
 use App\Models\CRMContext\Task;
 use App\Traits\Uuids;
 use App\ValueObject\CheckStatus;
@@ -71,5 +72,10 @@ class Check extends Model
     public function tasks(): BelongsTo
     {
         return $this->belongsTo(Tasks::class, 'task_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

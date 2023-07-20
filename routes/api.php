@@ -10,6 +10,7 @@ use App\Http\Controllers\TimeTrackingContext\CheckReportController;
 use App\Http\Controllers\TimeTrackingContext\ClientsController;
 use App\Http\Controllers\TimeTrackingContext\ProjectsController;
 use App\Http\Controllers\TimeTrackingContext\TasksController;
+use App\Http\Controllers\TimeTrackingContext\WhosInController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -113,6 +114,10 @@ Route::middleware('jwt.verify')->group(function() {
                 Route::get('task', 'hoursByTask');
                 Route::get('project', 'hoursByProject');
                 Route::get('client', 'hoursByClient');
+            });
+
+            Route::controller(WhosInController::class)->prefix('whos-in/')->group(function () {
+                Route::get('', 'index');
             });
         });
     });

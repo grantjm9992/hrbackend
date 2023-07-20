@@ -25,6 +25,11 @@ class Company extends Model
         'postcode',
         'number_of_employees',
         'sector_id',
+        'configuration',
+    ];
+
+    protected $casts = [
+        'configuration' => 'array',
     ];
 
     public function clients(): HasMany

@@ -61,7 +61,7 @@ class CompanyController extends Controller
         ]);
 
         $company = Company::find($id);
-        $company->name = $request->name;
+        $company->update($request->toArray());
         $company->save();
 
         return response()->json([
