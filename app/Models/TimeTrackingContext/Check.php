@@ -35,11 +35,11 @@ class Check extends Model
         'date_ended',
     ];
 
-    public function close(string $dateEnded): void
+    public function close(string $dateEnded, bool $close = true): void
     {
         $this->update([
             'date_ended' => $dateEnded,
-            'status' => CheckStatus::closed(),
+            'status' => $close ? CheckStatus::closed() : CheckStatus::pendingApproval(),
         ]);
         $this->updateTimestamps();
     }

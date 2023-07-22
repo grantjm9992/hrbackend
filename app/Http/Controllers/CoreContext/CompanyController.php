@@ -4,8 +4,11 @@ namespace App\Http\Controllers\CoreContext;
 
 use App\Http\Controllers\Controller;
 use App\Models\CoreContext\Company;
+use App\Models\TimeTrackingContext\CheckApprovers;
+use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CompanyController extends Controller
 {
@@ -61,6 +64,9 @@ class CompanyController extends Controller
         ]);
 
         $company = Company::find($id);
+        if (null === $company) {
+            throw new NotFoundHttpException('Company not found');
+        }
         $company->update($request->toArray());
         $company->save();
 
