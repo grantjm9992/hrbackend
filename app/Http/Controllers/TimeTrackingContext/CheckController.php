@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\TimeTrackingContext;
 
 use App\Http\Controllers\Controller;
+use App\Models\CoreContext\Company;
 use App\Models\CoreContext\User;
 use App\Models\TimeTrackingContext\Check;
 use App\ValueObject\CheckStatus;
@@ -102,7 +103,6 @@ class CheckController extends Controller
         $this->validate($request, [
             'user_id' => 'required|string',
             'status' => 'required|string',
-            'check_type_id' => 'required|string',
             'summary' => 'string',
             'task_id' => 'string',
             'project_id' => 'string',
@@ -187,8 +187,11 @@ class CheckController extends Controller
             ], 401);
         }
 
+        $company = Company::find($user['company_id']);
         $dateEnded = Carbon::now()->format('Y-m-d H:i:s');
-        $check->close($dateEnded);
+        $check->close(
+            $dateEnded
+        );
 
         return new JsonResponse([
             'message' => 'success'
