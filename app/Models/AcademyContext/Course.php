@@ -10,4 +10,15 @@ class Course extends Model
 {
     use HasFactory;
     use Uuids;
+
+    protected $fillable = [
+        'company_id',
+        'name',
+        'description',
+        'price',
+        'currency',
+        'billing_cycle',
+        'status',
+        'course_category_id',
+    ];
 }

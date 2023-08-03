@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Models\CoreContext;
 
 use App\Traits\Uuids;
+use App\ValueObject\UserRole;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
@@ -82,5 +84,19 @@ class User extends Authenticatable implements JWTSubject
         $this->update([
             'deleted_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
+    }
+
+    public function userRoles(): HasMany
+    {
+        return $this->hasMany(UserUserRoles::class);
+    }
+
+    public function getUserRoleArray(): array
+    {
+        $returnArray = [];
+        foreach ($this->userRoles()->get()->toArray() as $role) {
+            $returnArray[] = $role['user_role'];
+        }
+        return $returnArray;
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\ConfirmRegistration;
 use App\Mail\UserCreatedEmail;
 use App\Models\CoreContext\User;
+use App\Models\CoreContext\UserUserRoles;
 use App\Models\TimeTrackingContext\Clients;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class UsersController extends Controller
             'name' => 'required|string',
             'email' => 'required|string|email|max:255|unique:users',
             'surname' => 'required|string',
-            'user_role' => 'required|string',
+            'user_roles' => 'required|array',
             'role_id' => 'string|nullable',
         ]);
 
@@ -30,6 +31,13 @@ class UsersController extends Controller
         $dataArray['company_id'] = $user['company_id'];
 
         $user = User::create($dataArray);
+        foreach ($request->user_roles as $user_role) {
+            UserUserRoles::create([
+                'user_id' => $user->id,
+                'company_id' => $user->company_id,
+                'user_role' => $user_role,
+            ]);
+        }
         Mail::to($user->email)->send(new UserCreatedEmail(base64_encode($user->id)));
 
         return new JsonResponse([
@@ -66,12 +74,23 @@ class UsersController extends Controller
             'name' => 'required|string',
             'email' => 'required|string',
             'surname' => 'required|string',
-            'user_role' => 'required|string',
+            'user_roles' => 'required|array',
             'role_id' => 'string|nullable',
         ]);
 
         $client = User::find($id);
         $client->update($request->toArray());
+
+        UserUserRoles::query()
+            ->where('user_id', $id)
+            ->delete();
+        foreach ($request->user_roles as $user_role) {
+            UserUserRoles::create([
+                'user_id' => $id,
+                'company_id' => $client->company_id,
+                'user_role' => $user_role,
+            ]);
+        }
 
         return new JsonResponse([
             'message' => 'success',

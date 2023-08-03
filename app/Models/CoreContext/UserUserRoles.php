@@ -1,22 +1,17 @@
 <?php
 
-namespace App\Models\AcademyContext;
+namespace App\Models\CoreContext;
 
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Teacher extends Model
+class UserUserRoles extends Model
 {
     use HasFactory;
     use Uuids;
 
     protected $fillable = [
-        'company_id',
-        'user_id',
-        'text_colour',
-        'colour',
-        'hours',
-        'hour_cycle',
+        'user_id', 'user_role', 'company_id',
     ];
 }

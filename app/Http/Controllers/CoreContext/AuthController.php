@@ -7,6 +7,7 @@ use App\Mail\ConfirmRegistration;
 use App\Models\CoreContext\Company;
 use App\Models\CoreContext\Subscription;
 use App\Models\CoreContext\User;
+use App\Models\CoreContext\UserUserRoles;
 use App\Models\TimeTrackingContext\Check;
 use App\Models\TimeTrackingContext\CheckApprovers;
 use App\ValueObject\CheckStatus;
@@ -46,7 +47,9 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $user = Auth::user()->toArray();
+        /** @var User $user */
+        $user = Auth::user();
+        $user = array_merge(['user_roles' => $user->getUserRoleArray()], $user->toArray());
         $company = Company::query()->where('id', $user['company_id'])->with('subscription')->get()->first();
 
         $check = Check::query()
@@ -93,6 +96,12 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'company_id' => $company->id,
             'user_role' => 'company_admin',
+        ]);
+
+        UserUserRoles::create([
+            'company_id' => $company->id,
+            'user_id' => $user->id,
+            'user_role' => 'company_id',
         ]);
 
         $company->admin_user_id = $user->id;
@@ -174,6 +183,7 @@ class AuthController extends Controller
     public function refresh(): JsonResponse
     {
         $user = Auth::user();
+        $user = array_merge(['user_roles' => $user->getUserRoleArray()], $user->toArray());
         $check = Check::query()
             ->where('user_id', $user['id'])
             ->where('status', CheckStatus::open())

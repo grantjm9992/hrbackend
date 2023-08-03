@@ -10,4 +10,10 @@ class Level extends Model
 {
     use HasFactory;
     use Uuids;
+
+    protected $fillable = [
+        'company_id',
+        'name',
+        'tag_colour',
+    ];
 }
